@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Área de Administrador - Cyb3rtech</title>
+    <title>Admin Area - Cyb3rtech</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -174,6 +174,30 @@
             font-size: 12px;
             color: #a0d2ff;
         }
+        
+        .token-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        
+        .token-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #00d4ff;
+        }
+        
+        .token-code {
+            font-family: monospace;
+            color: #00d4ff;
+        }
+        
+        .token-desc {
+            font-size: 12px;
+            color: #a0d2ff;
+        }
     </style>
 </head>
 <body>
@@ -181,52 +205,61 @@
         <header>
             <div class="logo">
                 <i class="fas fa-user-shield"></i>
-                <span>ÁREA ADMINISTRADOR</span>
+                <span>ADMINISTRATOR AREA</span>
             </div>
             <div class="admin-link">
                 <a href="index.html" class="admin-btn">
-                    <i class="fas fa-arrow-left"></i> Volver al inicio
+                    <i class="fas fa-arrow-left"></i> Back to Home
                 </a>
             </div>
         </header>
 
         <div class="admin-container">
             <div class="admin-header">
-                <h1><i class="fas fa-user-secret"></i> Panel de Control - Nandocn.555</h1>
-                <p>Genera y gestiona tokens de acceso para Cyb3rtech Tool</p>
+                <h1><i class="fas fa-user-secret"></i> Control Panel - Nandocn.555</h1>
+                <p>Generate and manage access tokens for Cyb3rtech Tool</p>
+                <p style="margin-top: 10px; font-size: 14px; color: #a0d2ff;">
+                    <i class="fas fa-download"></i> Download URL: 
+                    <code id="downloadUrl">https://github.com/Nandocn555/0nyx.dll/raw/main/Cyb3rtech_Tool.zip</code>
+                </p>
             </div>
 
             <div class="admin-grid">
-                <!-- Generar Token -->
+                <!-- Generate Token -->
                 <div class="admin-card">
-                    <h3><i class="fas fa-plus-circle"></i> Generar Nuevo Token</h3>
+                    <h3><i class="fas fa-plus-circle"></i> Generate New Token</h3>
                     
-                    <p>Selecciona la duración:</p>
+                    <p>Select duration:</p>
                     
                     <div class="duration-buttons" id="durationButtons">
-                        <button class="duration-btn active" data-days="7">1 Semana</button>
-                        <button class="duration-btn" data-days="14">2 Semanas</button>
-                        <button class="duration-btn" data-days="30">1 Mes</button>
-                        <button class="duration-btn" data-days="60">2 Meses</button>
-                        <button class="duration-btn" data-days="90">3 Meses</button>
-                        <button class="duration-btn" data-days="180">6 Meses</button>
-                        <button class="duration-btn" data-days="365">1 Año</button>
-                        <button class="duration-btn" data-days="730">2 Años</button>
+                        <button class="duration-btn active" data-days="1">1 Day</button>
+                        <button class="duration-btn" data-days="7">1 Week</button>
+                        <button class="duration-btn" data-days="14">2 Weeks</button>
+                        <button class="duration-btn" data-days="30">1 Month</button>
+                        <button class="duration-btn" data-days="60">2 Months</button>
+                        <button class="duration-btn" data-days="90">3 Months</button>
+                        <button class="duration-btn" data-days="180">6 Months</button>
+                        <button class="duration-btn" data-days="365">1 Year</button>
                     </div>
                     
                     <div class="custom-days">
-                        <label>Días personalizados:</label>
-                        <input type="number" id="customDays" min="1" max="3650" placeholder="Ej: 45">
+                        <label>Custom days:</label>
+                        <input type="number" id="customDays" min="1" max="3650" placeholder="Ex: 45">
+                    </div>
+                    
+                    <div class="custom-days">
+                        <label>Description (optional):</label>
+                        <input type="text" id="tokenDesc" placeholder="Ex: For VIP Client">
                     </div>
                     
                     <button class="generate-btn" onclick="generateNewToken()">
-                        <i class="fas fa-key"></i> GENERAR TOKEN
+                        <i class="fas fa-key"></i> GENERATE TOKEN
                     </button>
                 </div>
 
-                <!-- Token Generado -->
+                <!-- Generated Token -->
                 <div class="admin-card" id="tokenResultCard" style="display: none;">
-                    <h3><i class="fas fa-key"></i> Token Generado</h3>
+                    <h3><i class="fas fa-key"></i> Token Generated</h3>
                     
                     <div class="token-result">
                         <strong>Token:</strong>
@@ -234,101 +267,117 @@
                         
                         <div class="token-info">
                             <i class="fas fa-calendar"></i>
-                            <span>Válido hasta: <span id="tokenExpires"></span></span>
+                            <span>Valid until: <span id="tokenExpires"></span></span>
                             <br>
                             <i class="fas fa-clock"></i>
-                            <span>Duración: <span id="tokenDuration"></span></span>
+                            <span>Duration: <span id="tokenDuration"></span></span>
+                            <br>
+                            <i class="fas fa-info-circle"></i>
+                            <span>Description: <span id="tokenDescription"></span></span>
                         </div>
                         
                         <button class="copy-btn" onclick="copyToken()">
-                            <i class="fas fa-copy"></i> Copiar Token
+                            <i class="fas fa-copy"></i> Copy Token
+                        </button>
+                        
+                        <button class="copy-btn" onclick="copyAllInfo()" style="margin-left: 10px;">
+                            <i class="fas fa-clipboard-list"></i> Copy All Info
                         </button>
                         
                         <div class="stats">
                             <div class="stat-item">
-                                <div class="stat-label">LONGITUD</div>
+                                <div class="stat-label">LENGTH</div>
                                 <div class="stat-value">16</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-label">CARACTERES</div>
+                                <div class="stat-label">CHARACTERS</div>
                                 <div class="stat-value">A-Z 0-9</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">STATUS</div>
+                                <div class="stat-value" style="color: #00ff88;">ACTIVE</div>
                             </div>
                         </div>
                     </div>
                     
                     <div style="margin-top: 20px; color: #a0d2ff; font-size: 14px;">
                         <i class="fas fa-info-circle"></i>
-                        <span>Comparte este token con el usuario. Se validará automáticamente en la web.</span>
+                        <span>Share this token with the user. It will be automatically validated on the website.</span>
                     </div>
                 </div>
 
-                <!-- Instrucciones -->
+                <!-- Active Tokens -->
                 <div class="admin-card">
-                    <h3><i class="fas fa-book"></i> Instrucciones</h3>
+                    <h3><i class="fas fa-list"></i> Active Tokens</h3>
                     
-                    <ol style="padding-left: 20px; margin-top: 15px;">
-                        <li>Selecciona la duración del token</li>
-                        <li>Haz clic en "GENERAR TOKEN"</li>
-                        <li>Copia el token generado</li>
-                        <li>Envíaselo al usuario por mensaje</li>
-                        <li>El usuario lo introduce en la web principal</li>
-                        <li>Si es válido, se descarga automáticamente</li>
-                    </ol>
+                    <div class="token-list" id="tokenList">
+                        <div class="token-item">
+                            <div class="token-code">ABC1DEF2GHI3JKL4</div>
+                            <div class="token-desc">Test token - Expires: 2024-12-31</div>
+                        </div>
+                        <div class="token-item">
+                            <div class="token-code">TEST1234TEST5678</div>
+                            <div class="token-desc">Christmas token - Expires: 2023-12-25</div>
+                        </div>
+                    </div>
                     
                     <div style="margin-top: 20px; padding: 15px; background: rgba(255, 0, 100, 0.1); border-radius: 5px;">
-                        <strong><i class="fas fa-exclamation-triangle"></i> IMPORTANTE:</strong>
+                        <strong><i class="fas fa-exclamation-triangle"></i> IMPORTANT:</strong>
                         <p style="margin-top: 10px; font-size: 13px;">
-                            Cada token es único y solo se puede usar una vez por usuario.
-                            Los tokens expiran automáticamente en la fecha indicada.
+                            Each token is unique and can only be used once per user.
+                            Tokens expire automatically on the indicated date.
+                            Current file: <strong>Cyb3rtech_Tool.zip</strong>
                         </p>
                     </div>
                 </div>
             </div>
 
             <a href="index.html" class="back-btn">
-                <i class="fas fa-arrow-left"></i> Volver a la página principal
+                <i class="fas fa-arrow-left"></i> Back to Home Page
             </a>
         </div>
     </div>
 
     <script>
-        // Configuración
+        // Configuration
         const ADMIN_PASSWORD = "mr3lit1221";
         let selectedDays = 7;
         let currentToken = null;
+        let currentTokenData = null;
 
-        // Verificar contraseña al cargar
+        // Check password on load
         document.addEventListener('DOMContentLoaded', function() {
             checkPassword();
             setupDurationButtons();
+            loadTokensFromStorage();
         });
 
-        // Verificar contraseña
+        // Check password
         function checkPassword() {
-            const password = prompt("Contraseña de administrador:");
+            const password = prompt("Administrator password:");
             if (password !== ADMIN_PASSWORD) {
-                alert("Contraseña incorrecta. Redirigiendo...");
+                alert("Incorrect password. Redirecting...");
                 window.location.href = "index.html";
             }
         }
 
-        // Configurar botones de duración
+        // Set up duration buttons
         function setupDurationButtons() {
             const buttons = document.querySelectorAll('.duration-btn');
             buttons.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    // Remover clase active de todos
+                    // Remove active class from all
                     buttons.forEach(b => b.classList.remove('active'));
-                    // Añadir active al clickeado
+                    // Add active to clicked one
                     this.classList.add('active');
-                    // Actualizar días seleccionados
+                    // Update selected days
                     selectedDays = parseInt(this.dataset.days);
-                    // Limpiar input personalizado
+                    // Clear custom input
                     document.getElementById('customDays').value = '';
                 });
             });
 
-            // Input personalizado
+            // Custom input
             const customInput = document.getElementById('customDays');
             customInput.addEventListener('input', function() {
                 if (this.value) {
@@ -338,40 +387,52 @@
             });
         }
 
-        // Generar nuevo token
+        // Generate new token
         function generateNewToken() {
-            // Verificar si hay días personalizados
+            // Check for custom days
             const customDays = document.getElementById('customDays').value;
             if (customDays) {
                 selectedDays = parseInt(customDays) || 7;
             }
 
-            // Validar rango
+            // Get description
+            const description = document.getElementById('tokenDesc').value || "Token generated by admin";
+
+            // Validate range
             if (selectedDays < 1 || selectedDays > 3650) {
-                alert("Los días deben estar entre 1 y 3650");
+                alert("Days must be between 1 and 3650");
                 return;
             }
 
-            // Generar token
+            // Generate token
             const tokenData = generateToken(selectedDays);
+            tokenData.desc = description;
             currentToken = tokenData.token;
+            currentTokenData = tokenData;
 
-            // Mostrar resultados
+            // Display results
             document.getElementById('generatedToken').textContent = tokenData.token;
             document.getElementById('tokenExpires').textContent = formatDate(tokenData.expires);
-            document.getElementById('tokenDuration').textContent = tokenData.days + ' días';
+            document.getElementById('tokenDuration').textContent = tokenData.days + ' days';
+            document.getElementById('tokenDescription').textContent = description;
 
-            // Mostrar tarjeta de resultado
+            // Show result card
             document.getElementById('tokenResultCard').style.display = 'block';
 
-            // Scroll a resultado
+            // Scroll to result
             document.getElementById('tokenResultCard').scrollIntoView({ behavior: 'smooth' });
 
-            // Guardar en localStorage (simulación)
+            // Save to localStorage
             saveTokenToLocalStorage(tokenData);
+            
+            // Add to token list
+            addTokenToList(tokenData);
+            
+            // Add to validTokens (so it actually works on the main page)
+            addTokenToDatabase(tokenData.token, tokenData.expires, description);
         }
 
-        // Generar token (misma función que en script.js pero disponible aquí)
+        // Generate token
         function generateToken(days = 7) {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let token = '';
@@ -380,7 +441,7 @@
                 token += chars.charAt(Math.floor(Math.random() * chars.length));
             }
             
-            // Calcular fecha de expiración
+            // Calculate expiration date
             const expireDate = new Date();
             expireDate.setDate(expireDate.getDate() + days);
             const expireStr = expireDate.toISOString().split('T')[0];
@@ -392,32 +453,47 @@
             };
         }
 
-        // Formatear fecha
+        // Format date
         function formatDate(dateStr) {
             const date = new Date(dateStr);
-            return date.toLocaleDateString('es-ES');
+            return date.toLocaleDateString('en-US');
         }
 
-        // Copiar token al portapapeles
+        // Copy token to clipboard
         function copyToken() {
             if (!currentToken) return;
             
             navigator.clipboard.writeText(currentToken).then(() => {
-                alert("Token copiado al portapapeles: " + currentToken);
+                alert("Token copied to clipboard: " + currentToken);
             }).catch(err => {
-                console.error('Error al copiar:', err);
-                // Fallback para navegadores antiguos
+                console.error('Error copying:', err);
+                // Fallback for older browsers
                 const textArea = document.createElement('textarea');
                 textArea.value = currentToken;
                 document.body.appendChild(textArea);
                 textArea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textArea);
-                alert("Token copiado!");
+                alert("Token copied!");
             });
         }
 
-        // Guardar token en localStorage (simulación)
+        // Copy all token info
+        function copyAllInfo() {
+            if (!currentTokenData) return;
+            
+            const info = `Token: ${currentTokenData.token}
+Valid until: ${formatDate(currentTokenData.expires)}
+Duration: ${currentTokenData.days} days
+Description: ${currentTokenData.desc}
+Download URL: https://github.com/Nandocn555/0nyx.dll/raw/main/Cyb3rtech_Tool.zip`;
+            
+            navigator.clipboard.writeText(info).then(() => {
+                alert("All token information copied to clipboard!");
+            });
+        }
+
+        // Save token to localStorage
         function saveTokenToLocalStorage(tokenData) {
             const tokens = JSON.parse(localStorage.getItem('adminTokens') || '[]');
             tokens.push({
@@ -428,9 +504,79 @@
             localStorage.setItem('adminTokens', JSON.stringify(tokens));
         }
 
-        // Cerrar sesión admin
+        // Load tokens from storage
+        function loadTokensFromStorage() {
+            const tokens = JSON.parse(localStorage.getItem('adminTokens') || '[]');
+            const tokenList = document.getElementById('tokenList');
+            
+            // Clear existing demo tokens
+            tokenList.innerHTML = '';
+            
+            // Add tokens from storage
+            tokens.forEach(token => {
+                if (!isTokenExpired(token.expires)) {
+                    addTokenToList(token);
+                }
+            });
+            
+            // If no tokens, show message
+            if (tokenList.children.length === 0) {
+                tokenList.innerHTML = '<div style="color: #a0d2ff; text-align: center; padding: 20px;">No active tokens found</div>';
+            }
+        }
+
+        // Add token to list display
+        function addTokenToList(tokenData) {
+            const tokenList = document.getElementById('tokenList');
+            
+            // Remove "no tokens" message if present
+            if (tokenList.innerHTML.includes('No active tokens')) {
+                tokenList.innerHTML = '';
+            }
+            
+            const tokenItem = document.createElement('div');
+            tokenItem.className = 'token-item';
+            tokenItem.innerHTML = `
+                <div class="token-code">${tokenData.token}</div>
+                <div class="token-desc">${tokenData.desc || 'No description'} - Expires: ${tokenData.expires}</div>
+            `;
+            
+            // Add to beginning of list
+            tokenList.insertBefore(tokenItem, tokenList.firstChild);
+        }
+
+        // Check if token is expired
+        function isTokenExpired(expireDate) {
+            const today = new Date().toISOString().split('T')[0];
+            return today > expireDate;
+        }
+
+        // Add token to database (simulate adding to script.js)
+        function addTokenToDatabase(token, expires, desc) {
+            // This would normally update the validTokens object in script.js
+            // For now, we'll just log it
+            console.log(`Token added to database:
+            "${token}": {
+                file: "https://github.com/Nandocn555/0nyx.dll/raw/main/Cyb3rtech_Tool.zip",
+                expires: "${expires}",
+                desc: "${desc}"
+            },`);
+            
+            // Show instructions for manual addition
+            alert(`IMPORTANT: Add this token to script.js:
+            
+            "${token}": {
+                file: "https://github.com/Nandocn555/0nyx.dll/raw/main/Cyb3rtech_Tool.zip",
+                expires: "${expires}",
+                desc: "${desc}"
+            },
+            
+            Add it to the validTokens object in script.js file.`);
+        }
+
+        // Admin logout
         function logoutAdmin() {
-            if (confirm("¿Cerrar sesión de administrador?")) {
+            if (confirm("Logout from admin area?")) {
                 window.location.href = "index.html";
             }
         }
