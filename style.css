@@ -1,4 +1,4 @@
-/* Reset y base */
+/* Reset and base */
 * {
     margin: 0;
     padding: 0;
@@ -393,16 +393,4 @@ footer i {
         flex-direction: column;
         gap: 10px;
     }
-}
-
-/* Token character styling */
-.token-char {
-    display: inline-block;
-    width: 30px;
-    height: 40px;
-    text-align: center;
-    margin: 0 2px;
-    background: rgba(0, 0, 0, 0.3);
-    border-bottom: 2px solid #00d4ff;
-    font-weight: bold;
 }
