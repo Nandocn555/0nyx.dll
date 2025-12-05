@@ -270,4 +270,170 @@
                         <li>Selecciona la duración del token</li>
                         <li>Haz clic en "GENERAR TOKEN"</li>
                         <li>Copia el token generado</li>
-                        <li>Envíaselo al
+                        <li>Envíaselo al usuario por mensaje</li>
+                        <li>El usuario lo introduce en la web principal</li>
+                        <li>Si es válido, se descarga automáticamente</li>
+                    </ol>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(255, 0, 100, 0.1); border-radius: 5px;">
+                        <strong><i class="fas fa-exclamation-triangle"></i> IMPORTANTE:</strong>
+                        <p style="margin-top: 10px; font-size: 13px;">
+                            Cada token es único y solo se puede usar una vez por usuario.
+                            Los tokens expiran automáticamente en la fecha indicada.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Volver a la página principal
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Configuración
+        const ADMIN_PASSWORD = "mr3lit1221";
+        let selectedDays = 7;
+        let currentToken = null;
+
+        // Verificar contraseña al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPassword();
+            setupDurationButtons();
+        });
+
+        // Verificar contraseña
+        function checkPassword() {
+            const password = prompt("Contraseña de administrador:");
+            if (password !== ADMIN_PASSWORD) {
+                alert("Contraseña incorrecta. Redirigiendo...");
+                window.location.href = "index.html";
+            }
+        }
+
+        // Configurar botones de duración
+        function setupDurationButtons() {
+            const buttons = document.querySelectorAll('.duration-btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remover clase active de todos
+                    buttons.forEach(b => b.classList.remove('active'));
+                    // Añadir active al clickeado
+                    this.classList.add('active');
+                    // Actualizar días seleccionados
+                    selectedDays = parseInt(this.dataset.days);
+                    // Limpiar input personalizado
+                    document.getElementById('customDays').value = '';
+                });
+            });
+
+            // Input personalizado
+            const customInput = document.getElementById('customDays');
+            customInput.addEventListener('input', function() {
+                if (this.value) {
+                    buttons.forEach(b => b.classList.remove('active'));
+                    selectedDays = parseInt(this.value) || 7;
+                }
+            });
+        }
+
+        // Generar nuevo token
+        function generateNewToken() {
+            // Verificar si hay días personalizados
+            const customDays = document.getElementById('customDays').value;
+            if (customDays) {
+                selectedDays = parseInt(customDays) || 7;
+            }
+
+            // Validar rango
+            if (selectedDays < 1 || selectedDays > 3650) {
+                alert("Los días deben estar entre 1 y 3650");
+                return;
+            }
+
+            // Generar token
+            const tokenData = generateToken(selectedDays);
+            currentToken = tokenData.token;
+
+            // Mostrar resultados
+            document.getElementById('generatedToken').textContent = tokenData.token;
+            document.getElementById('tokenExpires').textContent = formatDate(tokenData.expires);
+            document.getElementById('tokenDuration').textContent = tokenData.days + ' días';
+
+            // Mostrar tarjeta de resultado
+            document.getElementById('tokenResultCard').style.display = 'block';
+
+            // Scroll a resultado
+            document.getElementById('tokenResultCard').scrollIntoView({ behavior: 'smooth' });
+
+            // Guardar en localStorage (simulación)
+            saveTokenToLocalStorage(tokenData);
+        }
+
+        // Generar token (misma función que en script.js pero disponible aquí)
+        function generateToken(days = 7) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let token = '';
+            
+            for (let i = 0; i < 16; i++) {
+                token += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            // Calcular fecha de expiración
+            const expireDate = new Date();
+            expireDate.setDate(expireDate.getDate() + days);
+            const expireStr = expireDate.toISOString().split('T')[0];
+            
+            return {
+                token: token,
+                expires: expireStr,
+                days: days
+            };
+        }
+
+        // Formatear fecha
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('es-ES');
+        }
+
+        // Copiar token al portapapeles
+        function copyToken() {
+            if (!currentToken) return;
+            
+            navigator.clipboard.writeText(currentToken).then(() => {
+                alert("Token copiado al portapapeles: " + currentToken);
+            }).catch(err => {
+                console.error('Error al copiar:', err);
+                // Fallback para navegadores antiguos
+                const textArea = document.createElement('textarea');
+                textArea.value = currentToken;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert("Token copiado!");
+            });
+        }
+
+        // Guardar token en localStorage (simulación)
+        function saveTokenToLocalStorage(tokenData) {
+            const tokens = JSON.parse(localStorage.getItem('adminTokens') || '[]');
+            tokens.push({
+                ...tokenData,
+                generated: new Date().toISOString(),
+                used: false
+            });
+            localStorage.setItem('adminTokens', JSON.stringify(tokens));
+        }
+
+        // Cerrar sesión admin
+        function logoutAdmin() {
+            if (confirm("¿Cerrar sesión de administrador?")) {
+                window.location.href = "index.html";
+            }
+        }
+    </script>
+</body>
+</html>
