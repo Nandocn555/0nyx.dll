@@ -1,6 +1,0 @@
-name_tool=0nyx.dll Tool
-version_tool=2.6.0
-coding_tool=Python / Batch
-creator=Nandocn.555
-discord_server=https://discord.gg/rb8cK6aTBa
-github_tool=github.com/0nyxdll/0nyx.dll-Tool
