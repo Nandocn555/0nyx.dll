@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyb3rtech Tool - Sistema de Acceso por Token</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>CYB3RTECH</span>
+            </div>
+            <div class="admin-link">
+                <a href="admin.html" class="admin-btn">
+                    <i class="fas fa-user-shield"></i> Área Admin
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <div class="hero">
+                <h1><i class="fas fa-key"></i> Sistema de Acceso por Token</h1>
+                <p class="subtitle">Introduce el token proporcionado por el administrador para acceder a Cyb3rtech Tool</p>
+            </div>
+
+            <div class="token-section">
+                <div class="token-input-container">
+                    <div class="input-group">
+                        <i class="fas fa-ticket-alt input-icon"></i>
+                        <input 
+                            type="text" 
+                            id="tokenInput" 
+                            placeholder="Ej: ABC1DEF2GHI3JKL4"
+                            maxlength="16"
+                            autocomplete="off"
+                        >
+                        <button class="clear-btn" onclick="clearToken()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="token-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span>El token tiene 16 caracteres (letras y números)</span>
+                    </div>
+
+                    <button class="validate-btn" onclick="validateToken()">
+                        <i class="fas fa-unlock"></i>
+                        VALIDAR TOKEN Y ACCEDER
+                    </button>
+
+                    <div class="date-info">
+                        <i class="fas fa-calendar-check"></i>
+                        <span id="currentDate">Cargando fecha...</span>
+                    </div>
+                </div>
+
+                <!-- Instructions -->
+                <div class="instructions">
+                    <h3><i class="fas fa-list-ol"></i> Instrucciones:</h3>
+                    <ol>
+                        <li>Solicita un token al administrador (<strong>Nandocn.555</strong>)</li>
+                        <li>Introduce el token en el campo superior</li>
+                        <li>Haz clic en "VALIDAR TOKEN Y ACCEDER"</li>
+                        <li>Si es válido, se descargará automáticamente</li>
+                        <li>Extrae el ZIP y ejecuta la herramienta</li>
+                    </ol>
+                </div>
+
+                <!-- Messages -->
+                <div id="messageBox" class="message-box hidden">
+                    <div class="message-content">
+                        <i id="messageIcon" class="fas fa-info-circle"></i>
+                        <span id="messageText"></span>
+                    </div>
+                    <button class="close-btn" onclick="closeMessage()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Token Status -->
+                <div class="status-container">
+                    <div class="status-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>Duración</h4>
+                            <p>Tokens temporales (1 día a 1 año)</p>
+                        </div>
+                    </div>
+                    <div class="status-item">
+                        <i class="fas fa-shield-check"></i>
+                        <div>
+                            <h4>Seguro</h4>
+                            <p>Cifrado y verificación de fecha</p>
+                        </div>
+                    </div>
+                    <div class="status-item">
+                        <i class="fas fa-headset"></i>
+                        <div>
+                            <h4>Soporte</h4>
+                            <p>Contacto: Nandocn.555</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <p>
+                <i class="fas fa-copyright"></i> 2023 Cyb3rtech Tool - Sistema de acceso por tokens v1.0
+                <span class="separator">|</span>
+                <i class="fas fa-user-secret"></i> Admin: Nandocn.555
+                <span class="separator">|</span>
+                <i class="fas fa-calendar-alt"></i> <span id="footerDate"></span>
+            </p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
